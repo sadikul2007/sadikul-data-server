@@ -3,187 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Entry Form</title>
+    <title>Institution Search Portal</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f7f6; padding: 20px; }
-        .form-container { background-color: #ffffff; max-width: 800px; margin: 0 auto; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #333; margin-bottom: 20px; }
-        .section-title { background-color: #0056b3; color: white; padding: 10px; border-radius: 4px; margin-top: 20px; margin-bottom: 15px; font-size: 16px; }
-        
-        /* Grid Layouts */
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
-        .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px; } /* New 3-column layout for names */
-        
-        .form-group { display: flex; flex-direction: column; }
-        label { margin-bottom: 5px; font-weight: bold; font-size: 14px; color: #555; }
-        input[type="text"], input[type="date"], input[type="tel"], select, input[type="file"] { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
-        input[type="file"] { background-color: #f9f9f9; }
-        .submit-btn { background-color: #28a745; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 25px; font-weight: bold; }
-        .submit-btn:disabled { background-color: #6c757d; cursor: not-allowed; }
-        .helper-text { font-size: 12px; color: #888; margin-top: 4px; }
-        
-        /* Success Message Styling */
-        #successMessage { display: none; text-align: center; color: #28a745; font-weight: bold; font-size: 26px; padding: 50px 0; }
-
-        /* Mobile Responsiveness */
-        @media (max-width: 600px) { 
-            .form-grid, .form-grid-3 { grid-template-columns: 1fr; } 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7fa;
+            display: flex;
+            justify-content: center;
+            padding-top: 50px;
+            margin: 0;
+            padding-bottom: 50px; /* Added some padding at the bottom for scrolling */
+        }
+        .search-container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        .search-box {
+            display: flex;
+            gap: 10px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e6ed;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+        input[type="text"]:focus {
+            border-color: #3498db;
+        }
+        button {
+            padding: 12px 25px;
+            background-color: #3498db;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .result-box {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #e8f4fd;
+            border: 1px solid #bce0fd;
+            border-radius: 8px;
+            /* Removed display:none here so we can control it dynamically in JS */
+        }
+        .result-item {
+            margin: 10px 0;
+            color: #34495e;
+            font-size: 15px;
+            border-bottom: 1px dashed #bce0fd;
+            padding-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .result-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .result-label {
+            font-weight: 700;
+            color: #2980b9;
+        }
+        .result-value {
+            font-weight: 500;
+            text-align: right;
+            color: #2c3e50;
+            max-width: 60%; /* Added to prevent long emails from breaking the layout */
+            word-wrap: break-word;
+        }
+        .error {
+            color: #e74c3c;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+            background: #fadbd8;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        /* Container to hold multiple results */
+        #resultsContainer {
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-<body>
-    <!-- এইখানে আপনার নেভিগেশন মেনুর কোডটি ইনপুট করুন -->
-    <nav style="text-align: center; margin-bottom: 20px;">
-        <a href="index.html">Home</a> | 
-        <a href="e-Seva.html">e Seva</a> | 
-        </nav>
-<div class="form-container">
-    <h2 id="formTitle">Data Entry Form</h2>
-    
-    <div id="successMessage">
-        SUCCESS!<br>
-        <span style="font-size: 16px; color: #555; font-weight: normal; margin-top: 10px; display: block;">Data has been submitted successfully. Redirecting in 3 seconds...</span>
+
+    <div class="search-container">
+        <h2>Institution Database Search</h2>
+        
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Enter Institution Name..." onkeyup="checkEnter(event)">
+            <button onclick="searchData()">Search</button>
+        </div>
+        
+        <div id="errorMsg" class="error">No institution found matching that name.</div>
+
+        <div id="resultsContainer"></div>
     </div>
 
-    <form id="dataForm">
-        <div class="section-title">Personal Information</div>
-        
-        <div class="form-grid-3">
-            <div class="form-group"><label>First Name</label><input type="text" name="firstName" required></div>
-            <div class="form-group"><label>Middle Name</label><input type="text" name="middleName"></div>
-            <div class="form-group"><label>Last Name</label><input type="text" name="lastName" required></div>
-        </div>
+    <script>
+        // The data you provided has been formatted into a local database
+        const database = [
+            { name: "KUMUDINI BALIKA VIDYALAYA", hoi: "9434826686", email: "KUMUDINIBALIKA@GMAIL.COM", nodalPhone: "9830790483", nodalName: "INDRANI BISWAS MONDAL" },
+            { name: "ARBALIA BALIKA VIDYALAYA", hoi: "9830024237", email: "GIRLSARBELIA@GMAIL.COM", nodalPhone: "8768190226", nodalName: "RUMPA SARKAR" },
+            { name: "BADURIA DILIP KUMAR MEMORIAL INSTITUTION", hoi: "9382724653", email: "D.K.M.INSTITUTION@GMAIL.COM", nodalPhone: "9851757575", nodalName: "RAJESH CHATTERJEE" },
+            { name: "BADURIA KADAMBINI DEVI GIRLS HIGH SCHOOL", hoi: "9143125382", email: "KDGIRLSSCHOOL@GMAIL.COM", nodalPhone: "8967520778", nodalName: "RUPA GHOSH PAL" },
+            { name: "PUNRA BALIKA VIDYALAYA", hoi: "8240340636", email: "PUNRABALIKA@GMAIL.COM", nodalPhone: "9674225628", nodalName: "SWAGATA BANERJEE" },
+            { name: "RUDRAPUR RADHABALLAV HIGH SCHOOL", hoi: "9051967252", email: "RUDRAPURRADHABALLAVHS@GMAIL.COM", nodalPhone: "9614880761", nodalName: "SHIBAJI DAS" },
+            { name: "ARBALIA J.V.HIGH SCHOOL", hoi: "8777295347", email: "ARBALIAJVHIGHSCHOOL@GMAIL.COM", nodalPhone: "9474301053", nodalName: "SOVAN KUMAR KABASI" },
+            { name: "Punra B.K.M.P. Institution (H.S.)", hoi: "8637399743", email: "PUNRABKMP@GMAIL.COM", nodalPhone: "9732548722", nodalName: "SK. HABIBUL ALAM" },
+            { name: "M.B.S. NEORA HIGH", hoi: "9002874289", email: "MBSNEORAHS@GMAIL.COM", nodalPhone: "9433902447", nodalName: "SUJIT MANDAL" },
+            { name: "DANDIRHAT N K U S NIKETAN(H.S)", hoi: "9733756467", email: "DNKUSNBASIR1946@GMAIL.COM", nodalPhone: "9647297433", nodalName: "WAKAR UNUS GAZI" },
+            { name: "FULBARI AMINIA HIGH MADRASAH", hoi: "9830403863", email: "FULBARIAMINIAHIGHMADRASAH@GMAIL.COM", nodalPhone: "7797811877", nodalName: "SARDAR SADDAM HOSSAIN" },
+            { name: "BASIRHAT AMINIA SENIOR MADRASAH", hoi: "9153704855", email: "BASM1945@GMAIL.COM", nodalPhone: "9647008668", nodalName: "MD KUTUBUDDIN BAIDYA" },
+            { name: "BASIRHAT BARADA PRASAD VIDYAPITH GIRLS HIGH SCHOOL", hoi: "9875305702", email: "BBPVGHS@GMAIL.COM", nodalPhone: "6294640481", nodalName: "SARONITA GHOSH" },
+            { name: "BASIRHAT HARI MOHAN DALAL GIRLS HIGH SCHOOL", hoi: "8001204701", email: "HMD.GIRLS131@GMAIL.COM", nodalPhone: "6294203630", nodalName: "CHANDRA MITRA" },
+            { name: "BASIRHAT HIGH SCHOOL", hoi: "8918435750", email: "BASIRHATHIGHSCHOOL@GMAIL.COM", nodalPhone: "6294347959", nodalName: "JAYDIP MANDAL" },
+            { name: "BASIRHAT NAIHATI N C M SIKSHANIKETAN (H.S.)", hoi: "7029030053", email: "BASIRHATNAIHATINCM@GMAIL.COM", nodalPhone: "7029030053", nodalName: "NITAI DEY" },
+            { name: "BASIRHAT PURNA CHANDRA MAZUMDER GIRLS HIGH SCHOOL", hoi: "9734678968", email: "BASIRHATPCMGIRLSHS@GMAIL.COM", nodalPhone: "9434501412", nodalName: "BARNALI SARKAR" },
+            { name: "BASIRHAT TOWN HIGH SCHOOL", hoi: "9339300549", email: "BTHS1947@GMAIL.COM", nodalPhone: "8637828631", nodalName: "BISHNU PRASAD GIRI" },
+            { name: "KENARAM SMRITI VIDYAMANDIR", hoi: "7864885437", email: "KENARAMSMRITIVIDYAMANDIR@GMAIL.COM", nodalPhone: "8001036841", nodalName: "GUNADHAR HANSDA" },
+            { name: "BHABLA TANTRA SIR RAJENDRA HIGH SCHOOL (H.S)", hoi: "9126597221", email: "SIRRAJENDRA1911@GMAIL.COM", nodalPhone: "9932187348", nodalName: "DEBASISH MONDAL" },
+            { name: "BHABLA LADY MUKHERJEE GIRLS HIGH SCHOOL", hoi: "7001034975", email: "BLMGH1965@GMAIL.COM", nodalPhone: "973465524", nodalName: "MILI SAREN" },
+            { name: "Basirhat College", hoi: "8902781236", email: "PRINCIPALBCOLLEGE150@GMAIL.COM", nodalPhone: "7001984299", nodalName: "ARINDAM MANDAL" },
+            { name: "Panchanan Dalal Institution", hoi: "7980406770", email: "PDI.BASIRHAT1969@GMAIL.COM", nodalPhone: "9933722406", nodalName: "ZULFIKAR ALI" },
+            { name: "DHALTITHA SARALA VIDYAPITH (H.S)", hoi: "8013447809", email: "SARALA.VIDYAPITH@GMAIL.COM", nodalPhone: "8013447809", nodalName: "NITISH BISWAS" },
+            { name: "ROYBATI PANCHANAN HIGH SCHOOL", hoi: "9735283869", email: "RAYBATI869@GMAIL.COM", nodalPhone: "9735283869", nodalName: "ARUP SARDAR" },
+            { name: "JIRAKPUR DR.SRIMANTA SIKSHANIK", hoi: "7688083722", email: "JDSSHIGH@GMAIL.COM", nodalPhone: "9332086262", nodalName: "SAKTI PADA MANDAL" },
+            { name: "NURING TRAINING SCHOOL (GNM), BASIRHAT HEALTH DISTRICT", hoi: "9433572588", email: "NTSBASHIRHAT@GMAIL.COM", nodalPhone: "8918957898", nodalName: "MAHUYA SARDAR TAPASWI" },
+            { name: "BASIRHAT GOVERNMENT POLYTECHNIC", hoi: "9903774102", email: "BASIRHATGOVPOLY2019@GMAIL.COM", nodalPhone: "7001535293", nodalName: "SAMIKANANDA MONDAL" },
+            { name: "TAKI S.L. GIRLS HIGH SCHOOL", hoi: "8902233378", email: "TAKISLGIRLSHIGHSCHOOL@GMAIL.COM", nodalPhone: "8902233378", nodalName: "ARPITA DEY" },
+            { name: "TAKI R.K.MISSION HIGH SCHOOL", hoi: "9475485615", email: "TRKMHSTAKI@GMAIL.COM", nodalPhone: "7585856188", nodalName: "SHOVAN SARKAR" },
+            { name: "TAKI BHABANATH HIGH SCHOOL", hoi: "9775038288", email: "TAKI.BHABANATH.HIGH.SCHOOL1929@GMAIL.COM", nodalPhone: "9734344340", nodalName: "MD. ASHIKUR RAHAMAN" },
+            { name: "TAKI GOVT HIGH SCHOOL", hoi: "9231568116", email: "TAKIGOVTSCHOOL@GMAIL.COM", nodalPhone: "7001938378", nodalName: "SUJIT GHORUI" },
+            { name: "TAKI UTTARPALLI HIGH SCHOOL", hoi: "8101440657", email: "INFOTUHS@GMAIL.COM", nodalPhone: "7602475363", nodalName: "ANIMESH MALI" },
+            { name: "Taki Government College", hoi: "9831711385", email: "TAKIGOVERNMENTCOLLEGE1950@GMAIL.COM", nodalPhone: "7003996399", nodalName: "RINKU BEHARA" },
+            { name: "TOWN HASNABAD HIGH SCHOOL", hoi: "9932139422", email: "TOWNHASNABADHIGHSCHOOL@GMAIL.COM", nodalPhone: "8348603723", nodalName: "KARTIK MANDAL" },
+            { name: "NETAJI VIDYAPITH ( HIGH SCHOOL)", hoi: "9547976330", email: "NETAJIVIDYAPITH2014@GMAIL.COM", nodalPhone: "9547976330", nodalName: "TAPAS KUMAR MUKHOPADHYAY" }
+        ];
 
-        <div class="form-grid">
-            <div class="form-group"><label>DOB</label><input type="date" name="dob"></div>
-            <div class="form-group"><label>Mobile No.</label><input type="tel" name="mobileNo" pattern="[0-9]{10}"></div>
-            <div class="form-group"><label>Father Name</label><input type="text" name="fatherName"></div>
-            <div class="form-group"><label>Mother Name</label><input type="text" name="motherName"></div>
-            <div class="form-group"><label>Spouse Name</label><input type="text" name="spouseName"></div>
-            <div class="form-group">
-                <label>Marital Status</label>
-                <select name="maritalStatus">
-                    <option value="" disabled selected>Select Status</option>
-                    <option value="Married">Married</option>
-                    <option value="Unmarried">Unmarried</option>
-                    <option value="Divorced">Divorced</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="section-title">Address Details</div>
-        <div class="form-grid">
-            <div class="form-group"><label>Village</label><input type="text" name="village"></div>
-            <div class="form-group"><label>Post</label><input type="text" name="post"></div>
-            <div class="form-group"><label>PS (Police Station)</label><input type="text" name="ps"></div>
-            <div class="form-group"><label>Block / Municipality</label><input type="text" name="block"></div>
-            <div class="form-group"><label>GP / Ward</label><input type="text" name="gpWard"></div>
-            <div class="form-group"><label>PIN No.</label><input type="text" name="pinNo" pattern="[0-9]{6}"></div>
-        </div>
-
-        <div class="section-title">Bank Details</div>
-        <div class="form-grid">
-            <div class="form-group"><label>Bank Name</label><input type="text" name="bankName"></div>
-            <div class="form-group"><label>Branch Name</label><input type="text" name="branchName"></div>
-            <div class="form-group"><label>IFSC Code</label><input type="text" name="ifsc"></div>
-            <div class="form-group"><label>Account No.</label><input type="text" name="accountNo"></div>
-        </div>
-
-        <div class="section-title">Document Uploads</div>
-        <div class="form-grid">
-            <div class="form-group">
-                <label>Passport Size Photo</label>
-                <input type="file" id="passportPhoto" accept="image/*" onchange="validateFileSize(this)" required>
-                <span class="helper-text">Max size: 100KB</span>
-            </div>
-            <div class="form-group">
-                <label>Aadhar Card</label>
-                <input type="file" id="aadharCard" accept="image/*,.pdf" onchange="validateFileSize(this)" required>
-                <span class="helper-text">Max size: 100KB</span>
-            </div>
-            <div class="form-group">
-                <label>Bank Passbook</label>
-                <input type="file" id="bankPassbook" accept="image/*,.pdf" onchange="validateFileSize(this)" required>
-                <span class="helper-text">Max size: 100KB</span>
-            </div>
-        </div>
-
-        <button type="submit" class="submit-btn" id="submitBtn">Submit Data</button>
-    </form>
-</div>
-
-<script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzgpjUbRt1-3butyYnm1wbaJ51P85tc74RGFcrc3EYGDt7tdlXfAiDpvUn3BNIWfjZKRw/exec"; 
-
-    function validateFileSize(input) {
-        if (input.files && input.files[0] && input.files[0].size > 102400) {
-            alert("ফাইলটি অনেক বড়! দয়া করে 100KB এর ছোট ফাইল আপলোড করুন।");
-            input.value = ""; 
+        function checkEnter(event) {
+            if (event.key === "Enter") {
+                searchData();
+            }
         }
-    }
 
-    function getBase64(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result.split(',')[1]);
-            reader.onerror = error => reject(error);
-            reader.readAsDataURL(file);
-        });
-    }
+        function searchData() {
+            const query = document.getElementById("searchInput").value.toLowerCase().trim();
+            const resultsContainer = document.getElementById("resultsContainer");
+            const errorMsg = document.getElementById("errorMsg");
 
-    document.getElementById('dataForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const submitBtn = document.getElementById('submitBtn');
-        submitBtn.disabled = true;
-        submitBtn.innerText = "Submitting Data, Please Wait...";
+            // Reset view by clearing previous results and hiding the error
+            resultsContainer.innerHTML = "";
+            errorMsg.style.display = "none";
 
-        const formData = new FormData(this);
-        let data = Object.fromEntries(formData.entries());
+            if (query === "") return;
 
-        const passportFile = document.getElementById('passportPhoto').files[0];
-        const aadharFile = document.getElementById('aadharCard').files[0];
-        const passbookFile = document.getElementById('bankPassbook').files[0];
+            // Use .filter() instead of .find() to get ALL matches instead of just the first one
+            const foundInstitutions = database.filter(item => item.name.toLowerCase().includes(query));
 
-        try {
-            data.passportPhoto = passportFile ? { name: passportFile.name, type: passportFile.type, data: await getBase64(passportFile) } : null;
-            data.aadharCard = aadharFile ? { name: aadharFile.name, type: aadharFile.type, data: await getBase64(aadharFile) } : null;
-            data.bankPassbook = passbookFile ? { name: passbookFile.name, type: passbookFile.type, data: await getBase64(passbookFile) } : null;
-
-            fetch(WEB_APP_URL, {
-                method: 'POST',
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.status === "success") {
-                    document.getElementById('dataForm').style.display = 'none';
-                    document.getElementById('formTitle').style.display = 'none';
-                    document.getElementById('successMessage').style.display = 'block';
-                    
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 3000);
-                } else {
-                    alert("Error: " + result.message);
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = "Submit Data";
-                }
-            })
-            .catch(error => {
-                alert("Submission failed! Check your internet connection or URL.");
-                submitBtn.disabled = false;
-                submitBtn.innerText = "Submit Data";
-            });
-
-        } catch (error) {
-            alert("Error processing files!");
-            submitBtn.disabled = false;
-            submitBtn.innerText = "Submit Data";
+            if (foundInstitutions.length > 0) {
+                // Loop through every matching institution and generate HTML for it
+                foundInstitutions.forEach(foundInstitution => {
+                    const resultHtml = `
+                        <div class="result-box">
+                            <div class="result-item">
+                                <span class="result-label">Institution Name:</span>
+                                <span class="result-value">${foundInstitution.name}</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">HOI Mobile:</span>
+                                <span class="result-value">${foundInstitution.hoi}</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">Email Address:</span>
+                                <span class="result-value">${foundInstitution.email}</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">Nodal Officer Name:</span>
+                                <span class="result-value">${foundInstitution.nodalName}</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">Nodal Mobile:</span>
+                                <span class="result-value">${foundInstitution.nodalPhone}</span>
+                            </div>
+                        </div>
+                    `;
+                    // Inject the generated HTML into the container
+                    resultsContainer.innerHTML += resultHtml;
+                });
+            } else {
+                // Show error message if no matches found
+                errorMsg.style.display = "block";
+            }
         }
-    });
-</script>
+    </script>
 
 </body>
 </html>
