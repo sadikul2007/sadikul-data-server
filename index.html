@@ -12,7 +12,7 @@
             justify-content: center;
             padding-top: 50px;
             margin: 0;
-            padding-bottom: 50px; /* Added some padding at the bottom for scrolling */
+            padding-bottom: 50px;
         }
         .search-container {
             background: #ffffff;
@@ -64,7 +64,6 @@
             background-color: #e8f4fd;
             border: 1px solid #bce0fd;
             border-radius: 8px;
-            /* Removed display:none here so we can control it dynamically in JS */
         }
         .result-item {
             margin: 10px 0;
@@ -87,9 +86,21 @@
             font-weight: 500;
             text-align: right;
             color: #2c3e50;
-            max-width: 60%; /* Added to prevent long emails from breaking the layout */
+            max-width: 60%;
             word-wrap: break-word;
         }
+        
+        /* New CSS for the clickable links */
+        .result-value a {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        .result-value a:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+
         .error {
             color: #e74c3c;
             margin-top: 20px;
@@ -100,7 +111,6 @@
             padding: 10px;
             border-radius: 8px;
         }
-        /* Container to hold multiple results */
         #resultsContainer {
             margin-top: 10px;
         }
@@ -122,7 +132,6 @@
     </div>
 
     <script>
-        // The data you provided has been formatted into a local database
         const database = [
             { name: "KUMUDINI BALIKA VIDYALAYA", hoi: "9434826686", email: "KUMUDINIBALIKA@GMAIL.COM", nodalPhone: "9830790483", nodalName: "INDRANI BISWAS MONDAL" },
             { name: "ARBALIA BALIKA VIDYALAYA", hoi: "9830024237", email: "GIRLSARBELIA@GMAIL.COM", nodalPhone: "8768190226", nodalName: "RUMPA SARKAR" },
@@ -173,18 +182,18 @@
             const resultsContainer = document.getElementById("resultsContainer");
             const errorMsg = document.getElementById("errorMsg");
 
-            // Reset view by clearing previous results and hiding the error
             resultsContainer.innerHTML = "";
             errorMsg.style.display = "none";
 
             if (query === "") return;
 
-            // Use .filter() instead of .find() to get ALL matches instead of just the first one
             const foundInstitutions = database.filter(item => item.name.toLowerCase().includes(query));
 
             if (foundInstitutions.length > 0) {
-                // Loop through every matching institution and generate HTML for it
                 foundInstitutions.forEach(foundInstitution => {
+                    // Convert email to lowercase before displaying and making the link
+                    const lowerCaseEmail = foundInstitution.email.toLowerCase();
+
                     const resultHtml = `
                         <div class="result-box">
                             <div class="result-item">
@@ -193,11 +202,11 @@
                             </div>
                             <div class="result-item">
                                 <span class="result-label">HOI Mobile:</span>
-                                <span class="result-value">${foundInstitution.hoi}</span>
+                                <span class="result-value"><a href="tel:${foundInstitution.hoi}">${foundInstitution.hoi}</a></span>
                             </div>
                             <div class="result-item">
                                 <span class="result-label">Email Address:</span>
-                                <span class="result-value">${foundInstitution.email}</span>
+                                <span class="result-value"><a href="mailto:${lowerCaseEmail}">${lowerCaseEmail}</a></span>
                             </div>
                             <div class="result-item">
                                 <span class="result-label">Nodal Officer Name:</span>
@@ -205,15 +214,13 @@
                             </div>
                             <div class="result-item">
                                 <span class="result-label">Nodal Mobile:</span>
-                                <span class="result-value">${foundInstitution.nodalPhone}</span>
+                                <span class="result-value"><a href="tel:${foundInstitution.nodalPhone}">${foundInstitution.nodalPhone}</a></span>
                             </div>
                         </div>
                     `;
-                    // Inject the generated HTML into the container
                     resultsContainer.innerHTML += resultHtml;
                 });
             } else {
-                // Show error message if no matches found
                 errorMsg.style.display = "block";
             }
         }
