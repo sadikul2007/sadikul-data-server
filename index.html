@@ -9,11 +9,57 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f7fa;
             display: flex;
-            justify-content: center;
-            padding-top: 50px;
+            flex-direction: column; /* Added to stack header and search box */
+            align-items: center;    /* Added to center align everything */
+            padding-top: 30px;      /* Adjusted padding */
             margin: 0;
             padding-bottom: 50px;
         }
+
+        /* --- NEW CSS FOR TOP HEADER AND NAV BUTTONS --- */
+        .top-header {
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .top-header h1 {
+            font-size: 2.8em;
+            font-weight: 900;
+            color: #2c3e50;
+            margin: 0 0 20px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            padding: 10px 25px;
+            background-color: #ffffff;
+            color: #2980b9;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 2px solid #2980b9;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .nav-btn:hover {
+            background-color: #2980b9;
+            color: #ffffff;
+            box-shadow: 0 6px 12px rgba(41, 128, 185, 0.2);
+            transform: translateY(-2px);
+        }
+        /* ---------------------------------------------- */
+
         .search-container {
             background: #ffffff;
             padding: 30px;
@@ -118,6 +164,14 @@
 </head>
 <body>
 
+    <div class="top-header">
+        <h1>BCW Section Room No. 104</h1>
+        <div class="nav-links">
+            <a href="#" class="nav-btn">Home</a>
+            <a href="#" class="nav-btn">Link 1</a>
+            <a href="#" class="nav-btn">Link 2</a>
+        </div>
+    </div>
     <div class="search-container">
         <h2>Institution Database Search</h2>
         
